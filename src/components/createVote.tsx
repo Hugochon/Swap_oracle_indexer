@@ -31,20 +31,20 @@ export function CreateVote() {
       return write
       }  
 
-    const calculateEndingTimestamp = () => {
-        const now = Math.floor(Date.now() / 1000);
-        const durationInSeconds =
+      useEffect(() => {
+        const calculateEndingTimestamp = () => {
+          const now = Math.floor(Date.now() / 1000);
+          const durationInSeconds =
             parseInt(days) * 24 * 60 * 60 +
             parseInt(hours) * 60 * 60 +
             parseInt(minutes) * 60;
-
-        setEndingTimestamp((now + durationInSeconds).toString());
-    };
-
-    useEffect(() => {
+      
+          setEndingTimestamp((now + durationInSeconds).toString());
+        };
+      
         calculateEndingTimestamp();
-    }
-    , [calculateEndingTimestamp]);
+      }, [days, hours, minutes]);
+      
 
     return (
         <div className="my-4 border border-white-400 rounded-md p-4">
