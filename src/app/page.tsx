@@ -1,96 +1,180 @@
+'use client'
+import { use, useEffect, useState } from 'react'
+
 import { Account } from '../components/Account'
 import { Balance } from '../components/Balance'
-import { BlockNumber } from '../components/BlockNumber'
+import { useAccount } from 'wagmi'
+
 import { ConnectButton } from '../components/ConnectButton'
 import { Connected } from '../components/Connected'
-import { NetworkSwitcher } from '../components/NetworkSwitcher'
-import { ReadContract } from '../components/ReadContract'
-import { ReadContracts } from '../components/ReadContracts'
-import { ReadContractsInfinite } from '../components/ReadContractsInfinite'
-import { SendTransaction } from '../components/SendTransaction'
-import { SendTransactionPrepared } from '../components/SendTransactionPrepared'
-import { SignMessage } from '../components/SignMessage'
-import { SignTypedData } from '../components/SignTypedData'
-import { Token } from '../components/Token'
-import { WatchContractEvents } from '../components/WatchContractEvents'
-import { WatchPendingTransactions } from '../components/WatchPendingTransactions'
-import { WriteContract } from '../components/WriteContract'
-import { WriteContractPrepared } from '../components/WriteContractPrepared'
 
-export function Page() {
+import { useContractRead } from 'wagmi'
+
+import NFT_Vote_ABI from '../abi/NFT_Vote.json'
+import { GetVote } from '../components/getVoteData'
+import { CreateVote } from '../components/createVote'
+import BackgroundChanger from '../components/backgroundColor';
+
+import {wagmiContractConfig} from '../components/contracts'
+
+const contractAddress = wagmiContractConfig.address;
+const contractAbi = wagmiContractConfig.abi;
+
+const Page: React.FC = () => {
+
+  const { address } = useAccount();
+  const [totalSupply, setTotalSupply] = useState<any>([]);
+  const [userVotes, setUserVotes] = useState<any>([]);
+  const [activeVotes, setActiveVotes] = useState<any>([]);
+  const [mainBackgroundColor, setMainBackgroundColor] = useState<string>('');
+  const [filter, setFilter] = useState<string>('all');
+
+  const handleColorChange = (newColor: string): void => {
+    setMainBackgroundColor(newColor);
+  };
+
+  function getTotalSupply() {
+    const { data: readData, isLoading: readLoading } = useContractRead({
+      address: contractAddress,
+      abi: contractAbi,
+      functionName: 'totalVote',
+      onSuccess: (data) => {
+        console.log(data);
+        setTotalSupply(Number(data));
+      },
+    });
+
+    const start = totalSupply;
+    const end = 1;
+    const numbersArray = Array.from(
+      { length: start - end + 1 },
+      (_, index) => start - index
+    );
+    return numbersArray;
+  }
+
+  function getUserVotes(): number[]{
+    const { data: readData, isLoading: readLoading } = useContractRead({
+      address: contractAddress,
+      abi: NFT_Vote_ABI.abi,
+      functionName: 'get_All_Votes_from_User',
+      args: [address],
+      onSuccess: (data) => {
+        console.log("userVotes : ", data);
+        setUserVotes(data);
+      },
+    });
+
+    const convertedVotes: number[] = userVotes.map((vote: bigint) => Number(vote));
+  return convertedVotes;
+
+   
+  }
+
+  function getActiveVotes():number[] {
+    const { data: readData, isLoading: readLoading } = useContractRead({
+      address: contractAddress,
+      abi: contractAbi,
+      functionName: 'update_Active_Vote',
+      onSuccess: (data) => {
+        console.log("active Votes : ", data);
+        setActiveVotes(data);
+      },
+    });
+
+    const convertedVotes: number[] = activeVotes.map((vote: bigint) => Number(vote));
+    if (convertedVotes[0] ==0) {
+      return [];
+    }
+    else
+    {
+      return convertedVotes;
+    }
+  }
+
   return (
-    <>
-      <h1>wagmi + RainbowKit + Next.js</h1>
-
-      <ConnectButton />
-
+    <div className={mainBackgroundColor}>
+      <header className="bg-opacity-50 bg-black backdrop-blur-md text-white p-4">
+        <h1 className="text-3xl font-bold text-center">DAO TEST</h1>
+        <div className="flex justify-between items-center p-2">
+          <ConnectButton />
+          <Account/>
+          <Balance/>
+          <BackgroundChanger onColorChange={handleColorChange} />
+        </div>
+      </header>
       <Connected>
-        <hr />
-        <h2>Network</h2>
-        <NetworkSwitcher />
-        <br />
-        <hr />
-        <h2>Account</h2>
-        <Account />
-        <br />
-        <hr />
-        <h2>Balance</h2>
-        <Balance />
-        <br />
-        <hr />
-        <h2>Block Number</h2>
-        <BlockNumber />
-        <br />
-        <hr />
-        <h2>Read Contract</h2>
-        <ReadContract />
-        <br />
-        <hr />
-        <h2>Read Contracts</h2>
-        <ReadContracts />
-        <br />
-        <hr />
-        <h2>Read Contracts Infinite</h2>
-        <ReadContractsInfinite />
-        <br />
-        <hr />
-        <h2>Send Transaction</h2>
-        <SendTransaction />
-        <br />
-        <hr />
-        <h2>Send Transaction (Prepared)</h2>
-        <SendTransactionPrepared />
-        <br />
-        <hr />
-        <h2>Sign Message</h2>
-        <SignMessage />
-        <br />
-        <hr />
-        <h2>Sign Typed Data</h2>
-        <SignTypedData />
-        <br />
-        <hr />
-        <h2>Token</h2>
-        <Token />
-        <br />
-        <hr />
-        <h2>Watch Contract Events</h2>
-        <WatchContractEvents />
-        <br />
-        <hr />
-        <h2>Watch Pending Transactions</h2>
-        <WatchPendingTransactions />
-        <br />
-        <hr />
-        <h2>Write Contract</h2>
-        <WriteContract />
-        <br />
-        <hr />
-        <h2>Write Contract (Prepared)</h2>
-        <WriteContractPrepared />
-      </Connected>
-    </>
-  )
-}
+        <div className="container mx-auto p-4 backdrop-blur-md bg-opacity-40 rounded-md">
+          <div className="mb-4">
+            <h2 className="text-2xl font-bold mb-2 text-white">Create Vote</h2>
+            <CreateVote />
+          </div>
 
-export default Page
+          {/* Toggle buttons for filtering */}
+          <div className="mb-4">
+            <button
+              className={`px-4 py-2 mr-2 ${
+                filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'
+              }`}
+              onClick={() => setFilter('all')}
+            >
+              All Votes
+            </button>
+            <button
+              className={`px-4 py-2 mr-2 ${
+                filter === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'
+              }`}
+              onClick={() => setFilter('user')}
+            >
+              User Votes
+            </button>
+            <button
+              className={`px-4 py-2 ${
+                filter === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'
+              }`}
+              onClick={() => setFilter('active')}
+            >
+              Active Votes
+            </button>
+          </div>
+
+          {/* Display votes based on the selected filter */}
+          {filter === 'all' && (
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold mb-2 text-white">All Votes</h2>
+              {getTotalSupply().map((voteID) => (
+                <div key={voteID}>
+                  <GetVote voteID={voteID} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {filter === 'user' && (
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold mb-2 text-white">All votes where current User voted</h2>
+              {getUserVotes().map((voteID) => (
+                <div key={voteID}>
+                  <GetVote voteID={voteID} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {filter === 'active' && (
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold mb-2 text-white">All currently active votes</h2>
+              {getActiveVotes().map((voteID) => (
+                <div key={voteID}>
+                  <GetVote voteID={voteID} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </Connected>
+    </div>
+  );
+};
+
+export default Page;
