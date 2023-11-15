@@ -20,7 +20,7 @@ export function CreateVote() {
     const [minutes, setMinutes] = useState("0");
     const [endingTimestamp, setEndingTimestamp] = useState("999999999");
 
-    function writeContract(functionName: string, args: any[] | undefined, defaultArgs: any[] = []) {
+    function WriteContract(functionName: string, args: any[] | undefined, defaultArgs: any[] = []) {
         const { config } = usePrepareContractWrite({
           address: contractAddress,
           abi: NFT_Vote_ABI.abi,
@@ -44,7 +44,7 @@ export function CreateVote() {
     useEffect(() => {
         calculateEndingTimestamp();
     }
-    , []);
+    , [calculateEndingTimestamp()]);
 
     return (
         <div className="my-4 border border-white-400 rounded-md p-4">
@@ -109,7 +109,7 @@ export function CreateVote() {
           </div>
           <div>
             <button
-              onClick={writeContract("initialize_vote", [voteOptionA, voteOptionB, voteDescription, endingTimestamp],
+              onClick={WriteContract("initialize_vote", [voteOptionA, voteOptionB, voteDescription, endingTimestamp],
               ['defaultOptionA', 'defaultOptionB', 'defaultDescription', 'defaultEndingTimestamp']
           )}
               className="py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-500"

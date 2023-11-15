@@ -1,8 +1,5 @@
 'use client'
 import { use, useEffect, useState } from 'react'
-
-import { Account } from '../components/Account'
-import { Balance } from '../components/Balance'
 import { useAccount } from 'wagmi'
 
 import { ConnectButton } from '../components/ConnectButton'
@@ -91,10 +88,6 @@ const Page: React.FC = () => {
       return convertedVotes;
     }
   }
-
-  // useEffect(() => {
-  //   console.log('mainBackgroundColor updated:', mainBackgroundColor);
-  // }, [mainBackgroundColor]);
   
   return (
     <div className={mainBackgroundColor}>
@@ -102,8 +95,6 @@ const Page: React.FC = () => {
         <h1 className="text-3xl font-bold text-center">DAO TEST</h1>
         <div className="flex justify-between items-center p-2">
           <ConnectButton />
-          {/* <Account/>
-          <Balance/> */}
           <BackgroundChanger onColorChange={handleColorChange} />
         </div>
       </header>
