@@ -33,7 +33,7 @@ const Page: React.FC = () => {
     setMainBackgroundColor(newColor);
   };
 
-  function getTotalSupply() {
+  function GetTotalSupply() {
     const { data: readData, isLoading: readLoading } = useContractRead({
       address: contractAddress,
       abi: NFT_Vote_ABI.abi,
@@ -53,7 +53,7 @@ const Page: React.FC = () => {
     return numbersArray;
   }
 
-  function getUserVotes(): number[]{
+  function GetUserVotes(): number[]{
     const { data: readData, isLoading: readLoading } = useContractRead({
       address: contractAddress,
       abi: NFT_Vote_ABI.abi,
@@ -71,7 +71,7 @@ const Page: React.FC = () => {
    
   }
 
-  function getActiveVotes():number[] {
+  function GetActiveVotes():number[] {
     const { data: readData, isLoading: readLoading } = useContractRead({
       address: contractAddress,
       abi: NFT_Vote_ABI.abi,
@@ -146,7 +146,7 @@ const Page: React.FC = () => {
           {filter === 'all' && (
             <div className="mb-4">
               <h2 className="text-2xl font-bold mb-2 text-white">All Votes</h2>
-              {getTotalSupply().map((voteID) => (
+              {GetTotalSupply().map((voteID) => (
                 <div key={voteID}>
                   <GetVote voteID={voteID} />
                 </div>
@@ -157,7 +157,7 @@ const Page: React.FC = () => {
           {filter === 'user' && (
             <div className="mb-4">
               <h2 className="text-2xl font-bold mb-2 text-white">All votes where current User voted</h2>
-              {getUserVotes().map((voteID) => (
+              {GetUserVotes().map((voteID) => (
                 <div key={voteID}>
                   <GetVote voteID={voteID} />
                 </div>
@@ -168,7 +168,7 @@ const Page: React.FC = () => {
           {filter === 'active' && (
             <div className="mb-4">
               <h2 className="text-2xl font-bold mb-2 text-white">All currently active votes</h2>
-              {getActiveVotes().map((voteID) => (
+              {GetActiveVotes().map((voteID) => (
                 <div key={voteID}>
                   <GetVote voteID={voteID} />
                 </div>
