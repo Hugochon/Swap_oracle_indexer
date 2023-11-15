@@ -1,7 +1,7 @@
 import { erc20ABI } from 'wagmi'
 
 export const wagmiContractConfig = {
-  address: '0x05A28e4a726329b5562e8e3F714cea8Ce7D9db72',
+  address: '0x28B3143f44617E1ba70323B01f78f1aedd735333',
   abi: [
     {
       "inputs": [

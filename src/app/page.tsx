@@ -18,7 +18,6 @@ import BackgroundChanger from '../components/backgroundColor';
 import {wagmiContractConfig} from '../components/contracts'
 
 const contractAddress = wagmiContractConfig.address;
-const contractAbi = wagmiContractConfig.abi;
 
 const Page: React.FC = () => {
 
@@ -30,13 +29,14 @@ const Page: React.FC = () => {
   const [filter, setFilter] = useState<string>('all');
 
   const handleColorChange = (newColor: string): void => {
+
     setMainBackgroundColor(newColor);
   };
 
   function getTotalSupply() {
     const { data: readData, isLoading: readLoading } = useContractRead({
       address: contractAddress,
-      abi: contractAbi,
+      abi: NFT_Vote_ABI.abi,
       functionName: 'totalVote',
       onSuccess: (data) => {
         console.log(data);
@@ -74,7 +74,7 @@ const Page: React.FC = () => {
   function getActiveVotes():number[] {
     const { data: readData, isLoading: readLoading } = useContractRead({
       address: contractAddress,
-      abi: contractAbi,
+      abi: NFT_Vote_ABI.abi,
       functionName: 'update_Active_Vote',
       onSuccess: (data) => {
         console.log("active Votes : ", data);
@@ -92,14 +92,18 @@ const Page: React.FC = () => {
     }
   }
 
+  // useEffect(() => {
+  //   console.log('mainBackgroundColor updated:', mainBackgroundColor);
+  // }, [mainBackgroundColor]);
+  
   return (
     <div className={mainBackgroundColor}>
       <header className="bg-opacity-50 bg-black backdrop-blur-md text-white p-4">
         <h1 className="text-3xl font-bold text-center">DAO TEST</h1>
         <div className="flex justify-between items-center p-2">
           <ConnectButton />
-          <Account/>
-          <Balance/>
+          {/* <Account/>
+          <Balance/> */}
           <BackgroundChanger onColorChange={handleColorChange} />
         </div>
       </header>

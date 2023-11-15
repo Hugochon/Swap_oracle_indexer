@@ -4,6 +4,10 @@ import { useEffect, useState } from 'react';
 
 import NFT_Vote_ABI from '../abi/NFT_Vote.json'
 
+import {wagmiContractConfig} from './contracts'
+
+const contractAddress = wagmiContractConfig.address;
+
 const nftVoteContractAddress = "0x05A28e4a726329b5562e8e3F714cea8Ce7D9db72";
 
 export function CreateVote() {
@@ -18,7 +22,7 @@ export function CreateVote() {
 
     function writeContract(functionName: string, args: any[] | undefined, defaultArgs: any[] = []) {
         const { config } = usePrepareContractWrite({
-          address: nftVoteContractAddress,
+          address: contractAddress,
           abi: NFT_Vote_ABI.abi,
           functionName: functionName,
           args: args || defaultArgs,
@@ -73,7 +77,7 @@ export function CreateVote() {
               />
             </div>
           </div>
-          <span className='text-white'>Duration of the : (day, hour, minute)</span>
+          <span className='text-white'>Duration of the vote : (day, hour, minute)</span>
           <div className="flex flex-col md:flex-row md:space-x-4 md:space-y-0">
             <div className="mb-2 md:mb-0">
               <input

@@ -5,7 +5,9 @@ import NFT_Vote_ABI from '../abi/NFT_Vote.json';
 import GetRemainingDuration from './remainingDuration';
 import VoteBar from './voteBar';
 
-const nftVoteContractAddress = "0x05A28e4a726329b5562e8e3F714cea8Ce7D9db72";
+import {wagmiContractConfig} from './contracts'
+
+const contractAddress = wagmiContractConfig.address;
 
 interface GetVoteProps {
   voteID: number;
@@ -16,7 +18,7 @@ export function GetVote(props: GetVoteProps) {
   const [isActive, setIsActive] = useState(true);
 
   const { data: readData, isLoading: readLoading } = useContractRead({
-    address: nftVoteContractAddress,
+    address: contractAddress,
     abi: NFT_Vote_ABI.abi,
     functionName: 'get_Vote_Infos',
     args: [props.voteID],
@@ -26,7 +28,7 @@ export function GetVote(props: GetVoteProps) {
   });
 
   const { write, error } = useContractWrite({
-    address: nftVoteContractAddress,
+    address: contractAddress,
     abi: NFT_Vote_ABI.abi,
     functionName: 'increase_vote',
   });
