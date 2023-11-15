@@ -44,7 +44,7 @@ export function CreateVote() {
     useEffect(() => {
         calculateEndingTimestamp();
     }
-    , [calculateEndingTimestamp()]);
+    , [calculateEndingTimestamp]);
 
     return (
         <div className="my-4 border border-white-400 rounded-md p-4">

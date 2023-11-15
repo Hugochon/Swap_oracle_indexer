@@ -20,6 +20,7 @@ const Page: React.FC = () => {
 
   const { address } = useAccount();
   const [totalSupply, setTotalSupply] = useState<any>([]);
+  const [totalSupplyArray, setTotalSupplyArray] = useState<any>([]);
   const [userVotes, setUserVotes] = useState<any>([]);
   const [activeVotes, setActiveVotes] = useState<any>([]);
   const [mainBackgroundColor, setMainBackgroundColor] = useState<string>('');
@@ -30,64 +31,48 @@ const Page: React.FC = () => {
     setMainBackgroundColor(newColor);
   };
 
-  function GetTotalSupply() {
-    const { data: readData, isLoading: readLoading } = useContractRead({
-      address: contractAddress,
-      abi: NFT_Vote_ABI.abi,
-      functionName: 'totalVote',
-      onSuccess: (data) => {
-        console.log(data);
-        setTotalSupply(Number(data));
-      },
-    });
+  const { data: totalVoteData, isLoading: totalVoteLoading } = useContractRead({
+    address: contractAddress,
+    abi: NFT_Vote_ABI.abi,
+    functionName: 'totalVote',
+    onSuccess: (data) => {
+      console.log(data);
+  
+      const totalSupply = Number(data);
+  
+      const numbersArray = Array.from(
+        { length: totalSupply },
+        (_, index) => totalSupply - index
+      );
+  
+      setTotalSupplyArray(numbersArray);
+      setTotalSupply(totalSupply);
+    },
+});
 
-    const start = totalSupply;
-    const end = 1;
-    const numbersArray = Array.from(
-      { length: start - end + 1 },
-      (_, index) => start - index
-    );
-    return numbersArray;
-  }
+  // useContractRead for get_All_Votes_from_User
+  const { data: userVotesData, isLoading: userVotesLoading } = useContractRead({
+    address: contractAddress,
+    abi: NFT_Vote_ABI.abi,
+    functionName: 'get_All_Votes_from_User',
+    args: [address],
+    onSuccess: (data) => {
+      console.log("userVotes : ", data);
+      setUserVotes(data);
+    },
+  });
 
-  function GetUserVotes(): number[]{
-    const { data: readData, isLoading: readLoading } = useContractRead({
-      address: contractAddress,
-      abi: NFT_Vote_ABI.abi,
-      functionName: 'get_All_Votes_from_User',
-      args: [address],
-      onSuccess: (data) => {
-        console.log("userVotes : ", data);
-        setUserVotes(data);
-      },
-    });
-
-    const convertedVotes: number[] = userVotes.map((vote: bigint) => Number(vote));
-  return convertedVotes;
-
-   
-  }
-
-  function GetActiveVotes():number[] {
-    const { data: readData, isLoading: readLoading } = useContractRead({
-      address: contractAddress,
-      abi: NFT_Vote_ABI.abi,
-      functionName: 'update_Active_Vote',
-      onSuccess: (data) => {
-        console.log("active Votes : ", data);
-        setActiveVotes(data);
-      },
-    });
-
-    const convertedVotes: number[] = activeVotes.map((vote: bigint) => Number(vote));
-    if (convertedVotes[0] ==0) {
-      return [];
-    }
-    else
-    {
-      return convertedVotes;
-    }
-  }
+  // useContractRead for update_Active_Vote
+  const { data: activeVotesData, isLoading: activeVotesLoading } = useContractRead({
+    address: contractAddress,
+    abi: NFT_Vote_ABI.abi,
+    functionName: 'update_Active_Vote',
+    onSuccess: (data) => {
+      console.log("active Votes : ", data);
+      setActiveVotes(data);
+    },
+  });
+  
   
   return (
     <div className={mainBackgroundColor}>
@@ -137,18 +122,18 @@ const Page: React.FC = () => {
           {filter === 'all' && (
             <div className="mb-4">
               <h2 className="text-2xl font-bold mb-2 text-white">All Votes</h2>
-              {GetTotalSupply().map((voteID) => (
+              {totalSupplyArray.map((voteID:number) => (
                 <div key={voteID}>
                   <GetVote voteID={voteID} />
                 </div>
               ))}
             </div>
-          )}
+          )}  
 
-          {filter === 'user' && (
+           {filter === 'user' && (
             <div className="mb-4">
               <h2 className="text-2xl font-bold mb-2 text-white">All votes where current User voted</h2>
-              {GetUserVotes().map((voteID) => (
+              {userVotes.map((voteID:number) => (
                 <div key={voteID}>
                   <GetVote voteID={voteID} />
                 </div>
@@ -159,7 +144,7 @@ const Page: React.FC = () => {
           {filter === 'active' && (
             <div className="mb-4">
               <h2 className="text-2xl font-bold mb-2 text-white">All currently active votes</h2>
-              {GetActiveVotes().map((voteID) => (
+              {activeVotes.map((voteID:number) => (
                 <div key={voteID}>
                   <GetVote voteID={voteID} />
                 </div>
