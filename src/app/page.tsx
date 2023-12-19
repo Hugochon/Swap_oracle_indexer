@@ -28,6 +28,32 @@ const Page: React.FC = () => {
     userAddress = '0x00';
   }
 
+ 
+    const [chainLinkPrice, setChainLinkPrice] = useState<any>([]);
+    const [latestTimeStamp, setLatestTimeStamp] = useState<any>([]);
+
+    const { data: readChainLinkPrice, isLoading: readLoading, isError: readError } = useContractRead({
+      address: MarketPlace_Contract.address,
+      abi: MarketPlace_Contract.abi,
+      functionName: 'MegaETH_Price',
+      onSuccess: (data) => {
+        setChainLinkPrice((parseInt(data.toString())*(10**-8)).toFixed(2));
+        console.log(data);
+      },
+    });
+
+    const { data: readLatestTimeStamp, isLoading: readLoading2, isError: readError2 } = useContractRead({
+      address: MarketPlace_Contract.address,
+      abi: MarketPlace_Contract.abi,
+      functionName: 'latestTimeStamp',
+      onSuccess: (data) => {
+        setLatestTimeStamp(data.toString());
+        console.log(data);
+      },
+    });
+   
+  
+
   return (
     <div className="bg-purple-200 text-black min-h-screen">
       <header className="bg-opacity-50 bg-purple-600 backdrop-blur-md text-white p-4">
@@ -58,7 +84,9 @@ const Page: React.FC = () => {
             </div>
           </div>
           <div>
-
+              Latest ChainLink Price :   {chainLinkPrice}
+              <br></br>
+              Latest TimeStamp : {latestTimeStamp}
           </div>
           <div>
             <h1 className="text-2xl font-bold mb-4 text-center">Marketplace Informations</h1>

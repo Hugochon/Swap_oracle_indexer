@@ -46,7 +46,7 @@ export function ApproveButton(props: ApproveButtonProps) {
   return (
     <div className="bg-gray-100 p-4 rounded mb-4">
       <div className="text-lg font-bold mb-2">Current {props.token_Symbol} Allowance:</div>
-      <div className="text-xl mb-4">{currentAllowance}</div>
+      <div className="text-xl mb-4">{currentAllowance?.toFixed(0)}</div>
       <button
         onClick={handleApproveClick}
         disabled={writeLoading}
