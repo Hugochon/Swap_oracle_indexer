@@ -1,39 +1,36 @@
 'use client'
 
 import { useState } from 'react'
-import type { Address } from 'wagmi'
-import { useAccount, useBalance } from 'wagmi'
+import { useContractRead } from 'wagmi'
+import { useBalance } from 'wagmi'
+import { StableCoin_Contract } from './contracts'
 
-export function Balance() {
+
+interface GetBalanceProps {
+  token_Address: `0x${string}`;
+  user_Address: `0x${string}`;
+}
+
+export function Balance(props: GetBalanceProps) {
+  const [userBalance, setUserBalance] = useState<number | undefined>(undefined);
+
+  const { data: readData, isLoading: readLoading, isError } = useContractRead({
+    address: props.token_Address,
+    abi: StableCoin_Contract.abi,
+    functionName: 'balanceOf',
+    args: [props.user_Address],
+    onSuccess: (data) => {
+      // Convert BigInt to a readable number and then to JavaScript number
+      const readableBalance = Number(data.toString()) * 10**-18;
+      setUserBalance(readableBalance);
+    },
+  });
+
   return (
-    <>  
-      <div>
-        <AccountBalance />
-      </div>
-      <br />
-    </>
+    <span className='border border-solid border-white rounded p-2'>
+    {userBalance}
+  </span>
   )
 }
 
-export function AccountBalance() {
-  const { address } = useAccount()
-  const { data, refetch } = useBalance({
-    address,
-    watch: true,
-  })
-
-  // Check if a wallet is connected
-  const isWalletConnected = !!address;
-
-  return (
-    <div>
-      {isWalletConnected ? (
-        <>
-          {data?.formatted} ETH
-        </>
-      ) : (
-       null
-      )}
-    </div>
-  )
-}
+export default Balance;

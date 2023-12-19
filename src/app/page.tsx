@@ -1,160 +1,103 @@
 'use client'
 import { use, useEffect, useState } from 'react'
-import { useAccount } from 'wagmi'
+
+import { useContractRead } from 'wagmi'
+import { useContractWrite } from 'wagmi'
+
+import {StableCoin_Contract} from '../components/contracts'
+import {ETHLike_Contract} from '../components/contracts'
+import {MarketPlace_Contract} from '../components/contracts'
+import {BuySellMegaETHComponent} from '../components/Buy&Sell_MegaETH'
+import {Balance} from '../components/Balance'
+import {ApproveButton} from '../components/approveButton'
 
 import { ConnectButton } from '../components/ConnectButton'
 import { Connected } from '../components/Connected'
 
-import { useContractRead } from 'wagmi'
-
-import NFT_Vote_ABI from '../abi/NFT_Vote.json'
-import { GetVote } from '../components/getVoteData'
-import { CreateVote } from '../components/createVote'
-import BackgroundChanger from '../components/backgroundColor';
-
-import {wagmiContractConfig} from '../components/contracts'
-
-const contractAddress = wagmiContractConfig.address;
+import { useAccount } from 'wagmi'
 
 const Page: React.FC = () => {
+  const [userStableCoinBalance, setUserStableCoinBalance] = useState<any>([]);
+  const [userETHLikeBalance, setUserETHLikeBalance] = useState<any>([]);
 
-  const { address } = useAccount();
-  const [totalSupply, setTotalSupply] = useState<any>([]);
-  const [totalSupplyArray, setTotalSupplyArray] = useState<any>([]);
-  const [userVotes, setUserVotes] = useState<any>([]);
-  const [activeVotes, setActiveVotes] = useState<any>([]);
-  const [mainBackgroundColor, setMainBackgroundColor] = useState<string>('');
-  const [filter, setFilter] = useState<string>('all');
+  const [contractStableCoinBalance, setContractStableCoinBalance] = useState<any>([]);
+  const [contractETHLikeBalance, setContractETHLikeBalance] = useState<any>([]);
 
-  const handleColorChange = (newColor: string): void => {
+  let { address: userAddress } = useAccount();
+  if (userAddress === undefined) {
+    userAddress = '0x00';
+  }
 
-    setMainBackgroundColor(newColor);
-  };
-
-  const { data: totalVoteData, isLoading: totalVoteLoading } = useContractRead({
-    address: contractAddress,
-    abi: NFT_Vote_ABI.abi,
-    functionName: 'totalVote',
-    onSuccess: (data) => {
-      console.log(data);
-  
-      const totalSupply = Number(data);
-  
-      const numbersArray = Array.from(
-        { length: totalSupply },
-        (_, index) => totalSupply - index
-      );
-  
-      setTotalSupplyArray(numbersArray);
-      setTotalSupply(totalSupply);
-    },
-});
-
-  // useContractRead for get_All_Votes_from_User
-  const { data: userVotesData, isLoading: userVotesLoading } = useContractRead({
-    address: contractAddress,
-    abi: NFT_Vote_ABI.abi,
-    functionName: 'get_All_Votes_from_User',
-    args: [address],
-    onSuccess: (data) => {
-      console.log("userVotes : ", data);
-      setUserVotes(data);
-    },
-  });
-
-  // useContractRead for update_Active_Vote
-  const { data: activeVotesData, isLoading: activeVotesLoading } = useContractRead({
-    address: contractAddress,
-    abi: NFT_Vote_ABI.abi,
-    functionName: 'update_Active_Vote',
-    onSuccess: (data) => {
-      console.log("active Votes : ", data);
-      setActiveVotes(data);
-    },
-  });
-  
-  
   return (
-    <div className={mainBackgroundColor}>
-      <header className="bg-opacity-50 bg-black backdrop-blur-md text-white p-4">
-        <h1 className="text-3xl font-bold text-center">DAO TEST</h1>
+    <div className="bg-purple-200 text-black min-h-screen">
+      <header className="bg-opacity-50 bg-purple-600 backdrop-blur-md text-white p-4">
+        <h1 className="text-3xl font-bold text-center text-black underline">
+          Marketplace test
+        </h1>
         <div className="flex justify-between items-center p-2">
           <ConnectButton />
-          <BackgroundChanger onColorChange={handleColorChange} />
         </div>
       </header>
+  
       <Connected>
-        <div className="container mx-auto p-4 backdrop-blur-md bg-opacity-40 rounded-md">
-          <div className="mb-4">
-            <h2 className="text-2xl font-bold mb-2 text-white">Create Vote</h2>
-            <CreateVote />
+      <div className="container mx-auto mt-8 grid md:grid-cols-3 gap-8">
+          <div className="mb-8 md:mb-0">
+            <h1 className="text-2xl font-bold mb-4 text-center">User Informations</h1>
+            <div>
+              <h3 className="text-lg text-gray-500">Current User Address : {userAddress}</h3>
+            </div>
+            <div className="bg-gold p-4 rounded mb-4">
+              <p className="text-xl text-center">
+                USDH Balance: <Balance token_Address={StableCoin_Contract.address} user_Address={userAddress} />
+              </p>
+            </div>
+            <div className="bg-ethlike p-4 rounded mb-4">
+            <p className="text-xl text-center text-white bg-color">
+              METH Balance : <Balance token_Address={ETHLike_Contract.address} user_Address={userAddress} />
+              </p>
+            </div>
           </div>
+          <div>
 
-          {/* Toggle buttons for filtering */}
-          <div className="mb-4">
-            <button
-              className={`px-4 py-2 mr-2 ${
-                filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'
-              }`}
-              onClick={() => setFilter('all')}
-            >
-              All Votes
-            </button>
-            <button
-              className={`px-4 py-2 mr-2 ${
-                filter === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'
-              }`}
-              onClick={() => setFilter('user')}
-            >
-              User Votes
-            </button>
-            <button
-              className={`px-4 py-2 ${
-                filter === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-800'
-              }`}
-              onClick={() => setFilter('active')}
-            >
-              Active Votes
-            </button>
           </div>
-
-          {/* Display votes based on the selected filter */}
-          {filter === 'all' && (
-            <div className="mb-4">
-              <h2 className="text-2xl font-bold mb-2 text-white">All Votes</h2>
-              {totalSupplyArray.map((voteID:number) => (
-                <div key={voteID}>
-                  <GetVote voteID={voteID} />
-                </div>
-              ))}
+          <div>
+            <h1 className="text-2xl font-bold mb-4 text-center">Marketplace Informations</h1>
+            <div>
+              <h3 className="text-lg text-gray-500">Marketplace Contract Address : {MarketPlace_Contract.address}</h3>
             </div>
-          )}  
-
-           {filter === 'user' && (
-            <div className="mb-4">
-              <h2 className="text-2xl font-bold mb-2 text-white">All votes where current User voted</h2>
-              {userVotes.map((voteID:number) => (
-                <div key={voteID}>
-                  <GetVote voteID={voteID} />
-                </div>
-              ))}
+            <div className="bg-gold p-4 rounded mb-4">
+              <p className="text-xl text-center">
+              Marketplace USDH Balance: <Balance token_Address={StableCoin_Contract.address} user_Address={MarketPlace_Contract.address} />
+              </p>
             </div>
-          )}
-
-          {filter === 'active' && (
-            <div className="mb-4">
-              <h2 className="text-2xl font-bold mb-2 text-white">All currently active votes</h2>
-              {activeVotes.map((voteID:number) => (
-                <div key={voteID}>
-                  <GetVote voteID={voteID} />
-                </div>
-              ))}
+            <div className="bg-ethlike p-4 rounded mb-4">
+              <p className="text-xl text-center text-white bg-color">
+              Marketplace METH Balance : <Balance token_Address={ETHLike_Contract.address} user_Address={MarketPlace_Contract.address} />
+              </p>
             </div>
-          )}
+          </div>
+        </div>
+  
+        <div className="flex justify-center mt-8">
+          <BuySellMegaETHComponent />
+          <ApproveButton
+            token_Address={StableCoin_Contract.address}
+            user_Address={userAddress}
+            spender_Address={MarketPlace_Contract.address}
+            spender_Allowance={BigInt(10 * 10 ** 18)}
+            token_Symbol='USDH'
+          ></ApproveButton>
+          <ApproveButton
+            token_Address={ETHLike_Contract.address}
+            user_Address={userAddress}
+            spender_Address={MarketPlace_Contract.address}
+            spender_Allowance={BigInt(10 * 10 ** 18)}
+            token_Symbol='METH'
+          ></ApproveButton>
         </div>
       </Connected>
     </div>
   );
-};
+}
 
 export default Page;

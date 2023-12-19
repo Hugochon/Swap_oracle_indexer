@@ -9,7 +9,18 @@ module.exports = {
     './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundColor: {
+        'gold': '#ffd700', // Gold color
+        'ethlike': '#1e3a8a', // Dark blue-grey color
+        'light-grey': '#f5f5f5', // Light grey background color
+      },
+      textColor: {
+        'gold': '#ffd700', // Gold color
+        'ethlike': '#1e3a8a', // Dark blue-grey color
+        'white': '#ffffff', // White text color
+      },
+    },
   },
   plugins: [],
 }
