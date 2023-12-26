@@ -10,6 +10,7 @@ import {MarketPlace_Contract} from '../components/contracts'
 import {BuySellMegaETHComponent} from '../components/Buy&Sell_MegaETH'
 import {Balance} from '../components/Balance'
 import {ApproveButton} from '../components/approveButton'
+import InterestingPairsList from '../components/TheGraph'
 
 import { ConnectButton } from '../components/ConnectButton'
 import { Connected } from '../components/Connected'
@@ -97,71 +98,65 @@ const Page: React.FC = () => {
       }
     }, [readLatestTimeStamp]);
 
-    const formattedUserAddress = userAddress || '0x00';
-  
-    const formattedChainLinkPrice = parseFloat(chainLinkPrice) * 10 ** -8;
-  
+
     return (
       <div className="bg-purple-200 text-black min-h-screen">
-        {/* Header Section */}
         <header className="bg-opacity-50 bg-purple-600 backdrop-blur-md text-white p-4">
           <h1 className="text-3xl font-bold text-center text-black underline">
-            Marketplace Test
+            Marketplace test
           </h1>
           <div className="flex justify-between items-center p-2">
             <ConnectButton />
           </div>
         </header>
-  
-        {/* Main Content Section */}
+    
         <Connected>
           <div className="container mx-auto mt-8 grid md:grid-cols-3 gap-8">
-            {/* User Information Section */}
             <div className="mb-8 md:mb-0">
               <h1 className="text-2xl font-bold mb-4 text-center">User Information</h1>
-              <div className="mb-4">
-                <h3 className="text-lg text-gray-500">Current User Address:</h3>
-                <p className="text-sm">{formattedUserAddress}</p>
+              <div>
+                <h3 className="text-lg text-gray-500">Current User Address : {userAddress}</h3>
               </div>
               <div className="bg-gold p-4 rounded mb-4">
                 <p className="text-xl text-center">
-                  USDH Balance: <Balance token_Address={StableCoin_Contract.address} user_Address={formattedUserAddress} />
+                  USDH Balance: <Balance token_Address={StableCoin_Contract.address} user_Address={userAddress} />
                 </p>
               </div>
               <div className="bg-ethlike p-4 rounded mb-4">
                 <p className="text-xl text-center text-white bg-color">
-                  METH Balance: <Balance token_Address={ETHLike_Contract.address} user_Address={formattedUserAddress} />
+                  METH Balance : <Balance token_Address={ETHLike_Contract.address} user_Address={userAddress} />
                 </p>
               </div>
-              <p className="text-center mb-4 text-gray-600">Not enough USDH or Meth? Mint some!</p>
-              <div className="flex justify-around mt-4">
-                <button
-                  onClick={() => writeMintUSDH()}
-                  className="bg-gold text-white px-4 py-2 rounded"
-                >
-                  <span className="text-black">Mint USDH</span>
-                </button>
-                <button
-                  onClick={() => writeMintMETH()}
-                  className="bg-ethlike text-white px-4 py-2 rounded"
-                >
-                  Mint METH
-                </button>
+              <div className="flex flex-col items-center mt-5">
+                <p className="text-lg text-gray-700 mb-2">Not enough USDH or Meth? Mint some!</p>
+                <div className="flex justify-around">
+                  <button
+                    onClick={() => writeMintUSDH()}
+                    className="bg-gold text-white px-4 py-2 rounded hover:bg-yellow-500"
+                  >
+                    Mint USDH
+                  </button>
+                  <button
+                    onClick={() => writeMintMETH()}
+                    className="bg-ethlike text-white px-4 py-2 rounded hover:bg-purple-700"
+                  >
+                    Mint METH
+                  </button>
+                </div>
               </div>
             </div>
-  
-            {/* ChainLink Information Section */}
-            <div>
-              <h1 className="text-2xl font-bold mb-4 text-center">ChainLink Information</h1>
-              <br></br>
-              <br></br>
+    
+            <div className="w-full">
+              <h1 className="text-2xl font-bold mb-4 text-center">ChainLink Exchange</h1>
+              <br />
+              <br />
               <div className="bg-gray-100 p-6 rounded mb-6">
                 <div className="flex flex-col items-center">
                   <p className="text-xl mb-4">
-                    Latest ChainLink Price: <span className="text-ethlike underline">${formattedChainLinkPrice.toFixed(2)}</span>
+                    Latest ChainLink Price: <span className="text-ethlike underline">${chainLinkPrice}</span>
                   </p>
                   <p className="text-xl mb-4">
-                    Latest Time Actualization: <span className="text-ethlike">{timeDifference} minutes ago</span>
+                    Latest Time Actualisation: <span className="text-ethlike">{timeDifference} minutes ago</span>
                   </p>
                   <button
                     onClick={handleFetchData}
@@ -173,13 +168,11 @@ const Page: React.FC = () => {
                 </div>
               </div>
             </div>
-  
-            {/* Marketplace Information Section */}
-            <div>
-              <h1 className="text-2xl font-bold mb-4 text-center">Marketplace Information</h1>
-              <div className="mb-4">
-                <h3 className="text-lg text-gray-500">Marketplace Contract Address:</h3>
-                <p className="text-sm">{MarketPlace_Contract.address}</p>
+    
+            <div className="w-full">
+              <h1 className="text-2xl font-bold mb-4 text-center">Top Pairs Dashboard</h1>
+              <div>
+                <h3 className="text-lg text-gray-500">Marketplace Contract Address : {MarketPlace_Contract.address}</h3>
               </div>
               <div className="bg-gold p-4 rounded mb-4">
                 <p className="text-xl text-center">
@@ -188,33 +181,38 @@ const Page: React.FC = () => {
               </div>
               <div className="bg-ethlike p-4 rounded mb-4">
                 <p className="text-xl text-center text-white bg-color">
-                  Marketplace METH Balance: <Balance token_Address={ETHLike_Contract.address} user_Address={MarketPlace_Contract.address} />
+                  Marketplace METH Balance : <Balance token_Address={ETHLike_Contract.address} user_Address={MarketPlace_Contract.address} />
                 </p>
               </div>
             </div>
           </div>
-  
-          {/* Actions Section */}
+    
           <div className="flex justify-center mt-8">
-            <BuySellMegaETHComponent meth_price={formattedChainLinkPrice} />
+            <BuySellMegaETHComponent meth_price={chainLinkPrice} />
             <ApproveButton
               token_Address={StableCoin_Contract.address}
-              user_Address={formattedUserAddress}
+              user_Address={userAddress}
               spender_Address={MarketPlace_Contract.address}
               spender_Allowance={BigInt(10 * 10 ** 18)}
               token_Symbol='USDH'
-            />
+            ></ApproveButton>
             <ApproveButton
               token_Address={ETHLike_Contract.address}
-              user_Address={formattedUserAddress}
+              user_Address={userAddress}
               spender_Address={MarketPlace_Contract.address}
               spender_Allowance={BigInt(10 * 10 ** 18)}
               token_Symbol='METH'
-            />
+            ></ApproveButton>
+          </div>
+    
+          {/* Interesting Pairs Section */}
+          <div className="flex flex-col items-center mt-8">
+            <h1 className="text-2xl font-bold mb-4 text-center">Top Pairs Dashboard</h1>
+            <InterestingPairsList />
           </div>
         </Connected>
       </div>
     );
-  }
-  
-  export default Page;
+}
+
+export default Page;

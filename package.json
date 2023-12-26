@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@rainbow-me/rainbowkit": "^1.0.0",
+    "axios": "^1.6.2",
     "encoding": "^0.1.13",
     "lokijs": "^1.5.12",
     "next": "^13.5.6",
