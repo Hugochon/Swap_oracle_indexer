@@ -1,52 +1,36 @@
-# TD_Front_Wagmi
-
-Welcome to TD_Front_Wagmi, a decentralized voting system deployed on Vercel. The live site can be accessed [here](https://td-front-wagmi-git-main-hugochon.vercel.app/).
+# Chainlink Swap & DeFi Dashboard
 
 ## Overview
+This project is a foundational foray into building decentralized finance (DeFi) tools using Ethereum smart contracts. It includes two primary components: a token swap system utilizing Chainlink's price feeds and a small DeFi dashboard powered by TheGraph.
 
-TD_Front_Wagmi leverages blockchain technology to enable users to create and participate in decentralized votes. Each vote is represented as an NFT minted to the DAO contract, featuring various characteristics:
+### Objectives
+- Implement a swap mechanism using Chainlink for price accuracy.
+- Establish a marketplace for exchanging two types of tokens.
+- Develop a DeFi dashboard to display significant data about sushiswap LP Tokens.
 
-- **Question:** The primary query with two possible answers, A and B.
-- **Option A and Option B:** Descriptions for the respective choices.
-- **Counter A and Counter B:** Track the number of votes for each option.
-- **Starting_TimeStamp:** The timestamp at the creation of the vote.
-- **Ending_Timestamp:** The timestamp indicating when the vote concludes, specified by the user.
+## Components
 
-The smart contract is deployed at this address: `0xdfe95facf0Cac0211742814BD7e1A434Be6C35A4`. The contract code is available [here](https://github.com/Hugochon/TD_Front_Wagmi_Contract).
+### Part 1: Swap with Chainlink
+- **Setup**: Initialize a repository with Foundry for smart contract development and testing.
+- **Token Creation**: 
+  - *Stablecoin*: Represent a stable currency in the ecosystem.
+  - *Asset Token*: This token's value is derived from Chainlink's price feeds.
+- **Marketplace**: A platform for exchanging tokens at prices determined by Chainlink.
+- **Token Balances**: Ensure contracts have sufficient balances for operation.
+- **Chainlink Integration**: Utilize Chainlink's price feeds for real-time price data.
 
-## Functionalities
+Relevant Links:
+- [Chainlink Data Feeds](https://docs.chain.link/data-feeds/price-feeds/addresses?network=ethereum&page=1)
 
-1. **Propose a Vote:**
-   - Users can create new votes with various parameters.
+### Part 2: DeFi Dashboard with TheGraph
+- **Goal**: Create a DeFi dashboard using TheGraph to index and query blockchain data.
+- **Script**: A script capable of taking a SushiSwap LP Token address and displaying relevant data.
+- **Whales Tracking**: Identify and display the three largest holders of a given LP Token.
+- **Token Insights**: Show balance and underlying tokens of the LP Tokens.
 
-2. **Vote on Existing Votes:**
-   - Participants can cast their votes on existing polls.
-
-3. **Live Result Tracking:**
-   - Real-time results are available for each active vote.
-
-4. **Vote Security:**
-   - Ensures that users cannot vote more than once.
-
-5. **Wallet Interactions:**
-   - Requires a wallet (e.g., Metamask) for site access.
-
-6. **Information Displays:**
-   - Lists all votes, votes you've engaged with, and currently active votes.
-
-7. **Random Gradient Background Generator:**
-   - Enhances user experience with a dynamic visual feature.
-
-## Getting Started
-
-To interact with the voting system, you need a wallet (e.g., Metamask) and Goerli ETH to participate in votes. The website is deployed at [this link](https://td-front-wagmi-git-main-hugochon.vercel.app/).
-
-## Contract Address
-
-Smart Contract: `0xdfe95facf0Cac0211742814BD7e1A434Be6C35A4`
+Relevant Links:
+- [TheGraph Documentation](https://thegraph.com/docs/en/)
 
 ## Contributing
+Contributions are welcome to improve the swap functionality or the DeFi dashboard. Please ensure to submit issues and pull requests for any enhancements.
 
-Feel free to contribute to the development of this decentralized voting system. If you find any issues or have suggestions, please open an [issue](https://github.com/Hugochon/TD_Front_Wagmi_Contract/issues) or create a [pull request](https://github.com/Hugochon/TD_Front_Wagmi_Contract/pulls).
-
-Thank you for your interest and involvement in TD_Front_Wagmi!
